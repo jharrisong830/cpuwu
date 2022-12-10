@@ -1,0 +1,88 @@
+.text
+
+//DEMO PROGRAM FOR UWUSEMBLY
+
+//Sum of Squares
+u0 load 0 //loads a (0x00) from .data into register u0 (u0 = 0x03)
+u1 load 1 //loads b (0x01) from .data into register u1 (u1 = 0x04)
+u0 mul u0 u0 //multiply u0 by itself, store in u0 (u0 = a^2 = 0x09)
+u1 mul u1 u1 //multiply u1 by itself, store in u1 (u1 = b^2 = 0x10)
+u2 add u0 u1 //add u0 and u1, store in u2 (u2 = a^2 + b^2 = 0x19)
+u2 store 5 //store u2 to data memory at 0x05
+u2 print //print u2 to the hex display (should be 0x19, which is 0d25 = 3^2 + 4^2)
+
+
+//Operations & Syntax
+u0 move 0 //can copy register values/immediates to registers (u0 = 0x00)
+u1 load 1 //(u1 = 0x04)
+u1 div 8 u1 //can use any combination of registers or immediates (u1 = 0x02)
+
+u0    add    u0    105 //whitespice doesn't matter! (u0 = 0x69, nice)
+        u0 mul u0 u1 //whitespace still doesn't matter (u0 = 0xd2)
+
+u0 div u0 u1 //division! (u0 = 0x69)
+u7 not u7 //bitwise not! (u7 = 0xff)
+u7 sub u7 1 //subtraction! (u7 = 0xfe)
+u6 not u7 //(u6 = 0x01)
+u5 xor u6 u7 //bitwise exclusive or! (u5 = 0b0000 0001 (XOR) 0b1111 1110 = 0b1111 1111 = 0xff)
+u5 and u5 1 //bitwise and! (u5 = 0b1111 1111 & 0b0000 0001 = 0b0000 0001 = 0x01)
+u5 or 1 2 //bitwise or! (u5 = 0b01 | 0b10 = 0b11 = 0x03)
+
+
+//Jumping & Looping
+u0 move 6
+u1 move 0
+u2 move 105
+u3 move 0
+u4 move 0
+u5 move 0
+u6 move 0
+u7 move 0
+
+START_LOOP label //defining a label to use for a loop!
+//this loop will write 105 (u2) to the data memory (address specified by u1) on each iteration
+u2 store u1 //store to memory
+u1 add u1 1 //increment to next memory address
+u0 sub u0 1 //decrement the counter
+MEM_EXAMPLE zero u0 //jumps to label MEM_EXAMPLE if u0 has a value of 0...
+START_LOOP jump //...otherwise, jump back to START_LOOP
+
+
+//Memory Storing & Loading
+MEM_EXAMPLE label //lets first zero-out the data memory with this loop
+u1 sub u1 1
+u7 store u1
+END zero u1
+MEM_EXAMPLE jump
+
+END label
+u0 move 105
+//Now lets store and load values sequentially
+u0 store 0
+u1 load 0
+u1 store 1
+u2 load 1
+u2 store 2
+u3 load 2
+u3 store 3 //now memory addresses 0x00-0x03 should equal 0x69
+
+
+//That's the end of this demo program. Now try and make your own!
+
+//Note: at the end of this program...
+//...only addresses 0x00-0x03 should have data (they should all have a value of 0x69, nice!)
+//...registers should have the following values:
+//...u0 = 0x69
+//...u1 = 0x69
+//...u2 = 0x69
+//...u3 = 0x69
+//...u4 = 0x00
+//...u5 = 0x00
+//...u6 = 0x00
+//...u7 = 0x00
+
+
+.data 
+//optional data segment, to start data memory off with some initial values
+3 //a, will be stored at address 0x00
+4 //b, will be stored at address 0x01
